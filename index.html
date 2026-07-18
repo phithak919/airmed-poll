@@ -91,7 +91,7 @@ const firebaseConfig = {
 const SLIDE_URL = "https://drive.google.com/วางลิงก์สไลด์";
 const REF_URL   = "https://drive.google.com/วางลิงก์เอกสารอ้างอิง";
 
-const ROOT = "airmed2026";   // path ใน Realtime Database
+const ROOT = "sessions/airmed2026";   // path ใน Realtime Database
 /* ===================================================================== */
 
 const CONFIG_READY = !JSON.stringify(firebaseConfig).includes("\u0e27\u0e32\u0e07-");
@@ -147,7 +147,7 @@ function sendBattery(){
   const v = +document.getElementById("sl").value;
   db.ref(`${ROOT}/battery/${clientId()}`).set({v, t: Date.now()})
     .then(()=> document.getElementById("ok").textContent = "✓ บันทึกแล้ว ขอบคุณครับ/ค่ะ — ดูผลรวมบนจอใหญ่")
-    .catch(()=> document.getElementById("ok").textContent = "ส่งไม่สำเร็จ ลองอีกครั้ง");
+    .catch(e=> document.getElementById("ok").textContent = "ส่งไม่สำเร็จ: " + (e && e.code ? e.code : e));
 }
 
 function pageLight(){
@@ -176,7 +176,7 @@ function markLight(c){
 function sendLight(c, el){
   db.ref(`${ROOT}/light/${clientId()}`).set({c, t: Date.now()})
     .then(()=>{ markLight(c); document.getElementById("ok").textContent = "✓ บันทึกแล้ว — ดูสัดส่วนทั้งห้องบนจอใหญ่"; })
-    .catch(()=> document.getElementById("ok").textContent = "ส่งไม่สำเร็จ ลองอีกครั้ง");
+    .catch(e=> document.getElementById("ok").textContent = "ส่งไม่สำเร็จ: " + (e && e.code ? e.code : e));
 }
 
 function pageFeedback(){
@@ -211,7 +211,7 @@ function sendFeedback(){
   const c = document.getElementById("cmt").value.trim().slice(0,300);
   db.ref(`${ROOT}/feedback/${clientId()}`).set({s, c, t: Date.now()})
     .then(()=> document.getElementById("ok").textContent = "✓ ขอบคุณสำหรับความคิดเห็นครับ")
-    .catch(()=> document.getElementById("ok").textContent = "ส่งไม่สำเร็จ ลองอีกครั้ง");
+    .catch(e=> document.getElementById("ok").textContent = "ส่งไม่สำเร็จ: " + (e && e.code ? e.code : e));
 }
 
 /* ===================== หน้าแสดงผลสด (ฉายบนจอใหญ่) ===================== */
